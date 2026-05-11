@@ -25,12 +25,12 @@ export default {
       type: 'string',
     },
     {
-      name: 'whatsappLink',
+      name: 'whatsapp',
       title: 'WhatsApp Link',
       type: 'url',
     },
     {
-      name: 'googleMapsLink',
+      name: 'googleMaps',
       title: 'Google Maps Link',
       type: 'url',
     },
@@ -45,7 +45,7 @@ export default {
       type: 'text',
     },
     {
-      name: 'copyrightText',
+      name: 'copyright',
       title: 'Copyright Text',
       type: 'string',
     },

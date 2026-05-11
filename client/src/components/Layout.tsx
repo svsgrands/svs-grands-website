@@ -45,7 +45,7 @@ export default function Layout() {
             <div className="footer-brand">
               <Link to="/" className="footer-logo-wrap">
                 <img src={settings?.logo || "/assets/logo.png"} alt={settings?.hotelName || "SVS Grands"} className="footer-logo" />
-                <span className="footer-logo-text">{settings?.hotelName || "SVS Grands"}</span>
+                <span className="footer-logo-text">SVS Grands</span>
               </Link>
               <p className="footer-desc">
                 {settings?.footerDescription || "SVS Grands offers peaceful and comfortable stays near Sri Venkateswara Swamy Temple, Vadapalli — designed for pilgrims, families, and travelers seeking comfort and convenience."}
