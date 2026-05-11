@@ -120,7 +120,7 @@ export default function RoomsPage() {
 
   // Trigger animations on room change or view entry
   useEffect(() => {
-    if (isDetailsView) {
+    if (isDetailsView && activeRoom) {
       // Force scroll to top to ensure cinematic reveal is visible
       window.scrollTo(0, 0);
 
@@ -153,7 +153,7 @@ export default function RoomsPage() {
       setPrevImage(null);
       lastImageRef.current = null;
     }
-  }, [isDetailsView, activeRoomIndex, activeRoom.image]);
+  }, [isDetailsView, activeRoomIndex, activeRoom?.image]);
 
   const handleBookNow = (roomId: string) => {
     navigate(`/checkout?roomType=${roomId}&checkIn=${checkInDate}&checkOut=${checkOutDate}&guests=${guests}`);
@@ -168,7 +168,7 @@ export default function RoomsPage() {
   };
 
   // Pre-load prices for the active room
-  const pricing = pricingMap[activeRoom.id];
+  const pricing = activeRoom ? pricingMap[activeRoom.id] : null;
 
   return (
     <div className={`rooms-page-container ${isDetailsView ? 'is-details' : 'is-listing'} phase-${animPhase}`}>

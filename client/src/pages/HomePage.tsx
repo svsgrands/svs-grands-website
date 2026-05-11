@@ -1,3 +1,5 @@
+import { useState, useEffect, useRef } from 'react';
+import { Link, useOutletContext } from 'react-router-dom';
 import { client, HOMEPAGE_QUERY, urlFor } from '../lib/sanity';
 import ReservationBar from '../components/ReservationBar';
 
@@ -378,7 +380,7 @@ export default function HomePage() {
               }}
               className="home-rooms-swiper"
             >
-              {roomCategories.map((room) => (
+              {defaultRoomCategories.map((room) => (
                 <SwiperSlide key={room.id}>
                   <div className="home-room-card" onClick={() => openBooking(room.id)}>
                     <div className="home-room-image" style={{ backgroundImage: `url('${room.image}')` }} />

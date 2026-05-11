@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react';
 import { client, GALLERY_QUERY, urlFor } from '../lib/sanity';
 
 type MediaType = 'image' | 'video';

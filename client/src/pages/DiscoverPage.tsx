@@ -1,3 +1,5 @@
+import { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { client, PLACES_QUERY, urlFor } from '../lib/sanity';
 import './DiscoverPage.css';
 
@@ -197,7 +199,7 @@ export default function DiscoverPage() {
 
         <div 
           className={`discover-details-bg ${animPhase === 'animating' ? 'bg-reveal' : ''}`} 
-          style={{ backgroundImage: `url(${displayPlace.image})`, zIndex: 1 }} 
+          style={{ backgroundImage: `url(${displayPlace?.image || '/assets/BackgroundPC.jpg'})`, zIndex: 1 }} 
         />
       </>
 
@@ -225,23 +227,23 @@ export default function DiscoverPage() {
 
         {/* Content Panel */}
         <div className={`discover-content-panel ${animPhase === 'animating' ? 'panel-slide-in' : ''}`}>
-          <h1 className={`discover-title stagger-1 ${displayPlace.title.length > 30 ? 'title-long' : ''}`}>
-            {displayPlace.title}
+          <h1 className={`discover-title stagger-1 ${displayPlace?.title?.length > 30 ? 'title-long' : ''}`}>
+            {displayPlace?.title}
           </h1>
 
           <div className="discover-divider stagger-2"></div>
 
-          <p className="discover-description stagger-3">{displayPlace.description}</p>
+          <p className="discover-description stagger-3">{displayPlace?.description}</p>
 
           <div className="discover-info-grid stagger-4">
             <div className="discover-info-item">
-              <h4>{displayPlace.timingLabel}</h4>
-              <p style={{ whiteSpace: 'pre-line' }}>{displayPlace.timings}</p>
+              <h4>{displayPlace?.timingLabel}</h4>
+              <p style={{ whiteSpace: 'pre-line' }}>{displayPlace?.timings}</p>
             </div>
             
             <div className="discover-info-item">
               <h4>Distance from SVS Grands</h4>
-              <p>{displayPlace.distance}</p>
+              <p>{displayPlace?.distance}</p>
             </div>
           </div>
         </div>
