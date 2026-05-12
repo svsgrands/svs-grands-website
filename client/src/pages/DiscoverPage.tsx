@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { client, PLACES_QUERY, urlFor } from '../lib/sanity';
+import { client, PLACES_QUERY } from '../lib/sanity';
 import './DiscoverPage.css';
 
 const defaultDiscoverData = [

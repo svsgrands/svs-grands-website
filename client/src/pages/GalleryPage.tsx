@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { client, GALLERY_QUERY, urlFor } from '../lib/sanity';
+import { client, GALLERY_QUERY } from '../lib/sanity';
 
 type MediaType = 'image' | 'video';
 type Category = 'all' | 'classic' | 'standard' | 'deluxe' | 'superior' | 'family-comfort' | 'exterior';

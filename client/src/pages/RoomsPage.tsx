@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { calculatePrice, ROOM_NAMES, NORMAL_RATES } from '../utils/pricing';
 import type { RoomId } from '../utils/pricing';
-import { client, ROOMS_QUERY, urlFor } from '../lib/sanity';
+import { client, ROOMS_QUERY } from '../lib/sanity';
 import './RoomsPage.css';
 
 const getRoomImage = (id: string) => {

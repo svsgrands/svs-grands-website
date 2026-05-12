@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { client, HOMEPAGE_QUERY, urlFor } from '../lib/sanity';
+import { client, HOMEPAGE_QUERY } from '../lib/sanity';
 import ReservationBar from '../components/ReservationBar';
 
 // Import Swiper React components and modules
