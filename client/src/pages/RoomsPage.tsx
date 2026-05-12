@@ -92,11 +92,14 @@ export default function RoomsPage() {
       try {
         const data = await client.fetch(ROOMS_QUERY);
         
-        // PRESERVE ORDER: Use defaultRoomsData as the base to maintain room sequence
+        // PRESERVE ORDER & VISIBILITY: Use defaultRoomsData as the base array
         const mergedRooms = defaultRoomsData.map(def => {
           const sanityMatch = data?.find((r: any) => r.id === def.id || r.name === def.title);
           
           if (sanityMatch) {
+            // If explicitly hidden in Sanity, return null to filter out later
+            if (sanityMatch.isVisible === false) return null;
+
             return {
               ...def,
               title: sanityMatch.name || def.title,
@@ -108,7 +111,7 @@ export default function RoomsPage() {
             };
           }
           return def;
-        });
+        }).filter(Boolean) as any[];
 
         setRooms(mergedRooms);
       } catch (error) {

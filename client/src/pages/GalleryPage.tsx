@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { client, GALLERY_QUERY } from '../lib/sanity';
+import { client, GALLERY_QUERY, urlFor } from '../lib/sanity';
 
 type MediaType = 'image' | 'video';
 type Category = 'all' | 'classic' | 'standard' | 'deluxe' | 'superior' | 'family-comfort' | 'exterior';
@@ -81,13 +81,38 @@ export default function GalleryPage() {
           const allItems: GalleryItem[] = [];
           data.forEach((cat: any) => {
             if (cat.images) {
-              cat.images.forEach((img: any) => allItems.push({ ...img, category: cat.category }));
+              cat.images.forEach((img: any) => {
+                allItems.push({
+                  src: img.asset ? urlFor(img).url() : img.src,
+                  alt: img.caption || img.alt || 'Gallery Image',
+                  category: cat.category,
+                  type: 'image'
+                });
+              });
             }
             if (cat.videos) {
-              cat.videos.forEach((vid: any) => allItems.push({ ...vid, category: cat.category }));
+              cat.videos.forEach((vid: any) => {
+                allItems.push({
+                  src: vid.videoUrl || (vid.videoFile?.asset ? `https://cdn.sanity.io/files/${client.config().projectId}/${client.config().dataset}/${vid.videoFile.asset._ref.split('-')[1]}.${vid.videoFile.asset._ref.split('-')[2]}` : vid.src),
+                  alt: vid.caption || vid.alt || 'Gallery Video',
+                  category: cat.category,
+                  type: 'video',
+                  poster: vid.poster ? urlFor(vid.poster).url() : vid.poster
+                });
+              });
             }
           });
-          if (allItems.length > 0) setItems(allItems);
+          
+          // If we have Sanity items, merge them with defaults but avoid duplicates
+          if (allItems.length > 0) {
+            // Keep all defaults but override with Sanity content if desired
+            // For simplicity, we append Sanity items and filter uniqueness by src
+            const uniqueItems = [...allItems, ...defaultGalleryItems].reduce((acc: GalleryItem[], curr) => {
+              if (!acc.find(item => item.src === curr.src)) acc.push(curr);
+              return acc;
+            }, []);
+            setItems(uniqueItems);
+          }
         }
       } catch (error) {
         console.error('Sanity fetch error:', error);

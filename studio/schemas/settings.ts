@@ -59,5 +59,19 @@ export default {
       title: 'Default SEO Description',
       type: 'text',
     },
+    {
+      name: 'policies',
+      title: 'Policies & Legal',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'title', type: 'string', title: 'Policy Title' },
+            { name: 'content', type: 'text', title: 'Policy Content' },
+          ],
+        },
+      ],
+    },
   ],
 }

@@ -34,6 +34,10 @@ export const HOMEPAGE_QUERY = `*[_type == "homepage"][0] {
     "image": image.asset->url,
     "videoUrl": videoUrl.asset->url,
     "fallbackImage": fallbackImage.asset->url
+  },
+  "offers": offers[] {
+    ...,
+    "image": image.asset->url
   }
 }`
 
@@ -51,6 +55,8 @@ export const GALLERY_QUERY = `*[_type == "gallery"] {
   },
   videos[] {
     "src": videoFile.asset->url,
+    "videoUrl": videoUrl,
+    "poster": poster.asset->url,
     "alt": caption,
     "type": "video"
   }

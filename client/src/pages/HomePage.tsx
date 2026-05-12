@@ -151,6 +151,10 @@ export default function HomePage() {
   const [aboutContent, setAboutContent] = useState('Located near the famous Sri Venkateswara Swamy Temple, Vadapalli, SVS Grands offers a peaceful and comfortable stay experience for pilgrims, families, and travelers. Designed with modern comfort and traditional hospitality, our rooms provide a relaxing atmosphere with convenient amenities, flexible stay options, and easy access to nearby spiritual destinations.');
   const [featuresList, setFeaturesList] = useState(defaultFeatures);
   const [rooms, setRooms] = useState(defaultRoomCategories);
+  const [benefits, setBenefits] = useState([
+    { title: 'Long Stay Benefits', text: 'Book for 7+ Days and enjoy special pricing, complimentary Hi-tea, and a peaceful extended stay experience near Konaseema Tirupathi.', cta: 'CALL 8341199779' },
+    { title: 'Group Booking', text: '10+ Rooms available for religious groups, temple visitors, and corporate stays at special tariff.', cta: 'CALL 8341199779' }
+  ]);
 
   const goToSlide = (index: number) => {
     if (index === current || phase !== 'idle' || !slides[index]) return;
@@ -189,29 +193,34 @@ export default function HomePage() {
             }));
             setFeaturesList(mappedFeatures);
           }
+          
+          if (data.benefits && data.benefits.length > 0) {
+            const mappedBenefits = data.benefits.map((b: any) => ({
+              title: b.title,
+              text: b.description,
+              cta: 'CALL 8341199779' // Hardcoded as per cinematic requirement for this project
+            }));
+            setBenefits(mappedBenefits);
+          }
 
           // Fetch Rooms for Carousel
           const roomsData = await client.fetch(ROOMS_QUERY);
           if (roomsData && roomsData.length > 0) {
-            const mappedRooms = roomsData.map((r: any) => {
-              const sanityImage = r.coverImage;
-              let fallbackImage = '/assets/rooms/classic/1.png';
-              
-              if (!sanityImage) {
+            // Filter for only featured and visible rooms for the homepage carousel
+            const featuredRooms = roomsData.filter((r: any) => r.isFeatured !== false && r.isVisible !== false);
+            
+            if (featuredRooms.length > 0) {
+              const mappedRooms = featuredRooms.map((r: any) => {
                 const original = defaultRoomCategories.find(d => d.id === r.id || d.name === r.name);
-                if (original) fallbackImage = original.image;
-              }
-
-              return {
-                id: r.id || r._id,
-                name: r.name,
-                image: sanityImage || fallbackImage,
-                price: r.price || '1000',
-                unit: r.unit || '/12hrs',
-                desc: r.shortDescription || r.fullDescription
-              };
-            });
-            setRooms(mappedRooms);
+                return {
+                  id: r.id || r._id,
+                  title: r.name,
+                  image: r.coverImage || (original ? original.image : '/assets/rooms/classic/1.png'),
+                  description: r.shortDescription || (original ? original.description : 'Luxury stay experience.')
+                };
+              });
+              setRooms(mappedRooms);
+            }
           }
         }
       } catch (error) {
@@ -319,20 +328,20 @@ export default function HomePage() {
                 {/* Circle 1: Long Stay Benefits (Largest Hero) */}
                 <div className="ar-circle ar-circle-1 ar-circle-dark ar-circle-v-large">
                   <div className="ar-circle-inner">
-                    <h3 className="ar-circle-title">Long Stay Benefits</h3>
+                    <h3 className="ar-circle-title">{benefits[0]?.title || 'Long Stay Benefits'}</h3>
                     <p className="ar-circle-main-text">
-                      Book for 7+ Days and enjoy special pricing, complimentary Hi-tea, and a peaceful extended stay experience near Konaseema Tirupathi.
+                      {benefits[0]?.text || 'Book for 7+ Days and enjoy special pricing, complimentary Hi-tea, and a peaceful extended stay experience near Konaseema Tirupathi.'}
                     </p>
-                    <div className="ar-circle-cta">CALL 8341199779</div>
+                    <div className="ar-circle-cta">{benefits[0]?.cta || 'CALL 8341199779'}</div>
                   </div>
                 </div>
                 
                 {/* Circle 2: Group Booking (Secondary Anchor) */}
                 <div className="ar-circle ar-circle-2 ar-circle-dark ar-circle-large">
                   <div className="ar-circle-inner">
-                    <h3 className="ar-circle-title">Group Booking</h3>
-                    <p className="ar-circle-main-text">10+ Rooms available for religious groups, temple visitors, and corporate stays at special tariff.</p>
-                    <div className="ar-circle-cta">CALL 8341199779</div>
+                    <h3 className="ar-circle-title">{benefits[1]?.title || 'Group Booking'}</h3>
+                    <p className="ar-circle-main-text">{benefits[1]?.text || '10+ Rooms available for religious groups, temple visitors, and corporate stays at special tariff.'}</p>
+                    <div className="ar-circle-cta">{benefits[1]?.cta || 'CALL 8341199779'}</div>
                   </div>
                 </div>
 

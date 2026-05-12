@@ -47,6 +47,8 @@ export default {
           type: 'object',
           fields: [
             { name: 'videoFile', type: 'file' },
+            { name: 'videoUrl', type: 'url', title: 'Video URL (Alternative to file)' },
+            { name: 'poster', type: 'image', title: 'Video Poster' },
             { name: 'caption', type: 'string' },
           ],
         },

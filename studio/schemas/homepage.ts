@@ -65,5 +65,36 @@ export default {
       title: 'Homepage SEO Description',
       type: 'text',
     },
+    {
+      name: 'offers',
+      title: 'Special Offers',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'title', type: 'string' },
+            { name: 'description', type: 'text' },
+            { name: 'image', type: 'image' },
+            { name: 'ctaLabel', type: 'string' },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'benefits',
+      title: 'Why Choose Us / Benefits',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'title', type: 'string' },
+            { name: 'description', type: 'text' },
+            { name: 'icon', type: 'string', description: 'Icon name (e.g., star, heart)' },
+          ],
+        },
+      ],
+    },
   ],
 }
