@@ -146,29 +146,32 @@ export default function DiscoverPage() {
     const fetchPlaces = async () => {
       try {
         const data = await client.fetch(PLACES_QUERY);
-        if (data && data.length > 0) {
-          const mappedPlaces = data.map((p: any) => {
-            // IMPROVED FALLBACK: If Sanity image is missing, try to find original image from hardcoded data
-            const sanityImage = p.featuredImage || p.gallery?.[0];
-            let fallbackImage = '/assets/BackgroundPC.jpg';
-            
-            if (!sanityImage) {
-              const original = defaultDiscoverData.find(d => d.id === p.id || d.title.includes(p.name));
-              if (original) fallbackImage = original.image;
-            }
+        
+        // PRESERVE ORDER & ALL PLACES: Use defaultDiscoverData as the base array
+        const mergedPlaces = defaultDiscoverData.map(def => {
+          // Try to find a match in Sanity data by ID or Name
+          const sanityMatch = data?.find((p: any) => 
+            p.id === def.id || 
+            def.title.toLowerCase().includes(p.name.toLowerCase())
+          );
 
+          if (sanityMatch) {
             return {
-              id: p.id || p._id,
-              title: p.name,
-              image: sanityImage || fallbackImage,
-              description: p.description,
-              distance: p.distance,
-              timingLabel: 'Timings',
-              timings: 'Contact for timings'
+              ...def,
+              title: sanityMatch.name || def.title,
+              image: sanityMatch.featuredImage || sanityMatch.gallery?.[0] || def.image,
+              description: sanityMatch.description || def.description,
+              distance: sanityMatch.distance || def.distance,
+              // Preserve the Telugu title part if Sanity name is just English
+              title: def.title.includes('—') && !sanityMatch.name.includes('—') 
+                ? `${def.title.split('—')[0]}— ${sanityMatch.name}` 
+                : (sanityMatch.name || def.title)
             };
-          });
-          setPlaces(mappedPlaces);
-        }
+          }
+          return def;
+        });
+
+        setPlaces(mergedPlaces);
       } catch (error) {
         console.error('Sanity fetch error:', error);
       }

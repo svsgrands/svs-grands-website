@@ -91,30 +91,26 @@ export default function RoomsPage() {
     const fetchRooms = async () => {
       try {
         const data = await client.fetch(ROOMS_QUERY);
-        if (data && data.length > 0) {
-          // Map Sanity data to our frontend structure
-          const mappedRooms = data.map((r: any) => {
-            // IMPROVED FALLBACK: If Sanity image is missing, use getRoomImage(id) or defaultRoomsData fallback
-            const sanityImage = r.coverImage;
-            let fallbackImage = getRoomImage(r.id);
-            
-            if (!sanityImage) {
-              const original = defaultRoomsData.find(d => d.id === r.id || d.title === r.name);
-              if (original) fallbackImage = original.image;
-            }
-
+        
+        // PRESERVE ORDER: Use defaultRoomsData as the base to maintain room sequence
+        const mergedRooms = defaultRoomsData.map(def => {
+          const sanityMatch = data?.find((r: any) => r.id === def.id || r.name === def.title);
+          
+          if (sanityMatch) {
             return {
-              id: r.id || r._id,
-              title: r.name,
-              bedTypes: r.occupancy || 'Double Bed',
-              image: sanityImage || fallbackImage,
-              description: r.shortDescription || r.fullDescription,
-              price: r.price,
-              amenities: r.amenities || []
+              ...def,
+              title: sanityMatch.name || def.title,
+              bedTypes: sanityMatch.occupancy || def.bedTypes,
+              image: sanityMatch.coverImage || def.image,
+              description: sanityMatch.shortDescription || sanityMatch.fullDescription || def.description,
+              price: sanityMatch.price || def.price,
+              amenities: (sanityMatch.amenities && sanityMatch.amenities.length > 0) ? sanityMatch.amenities : def.amenities
             };
-          });
-          setRooms(mappedRooms);
-        }
+          }
+          return def;
+        });
+
+        setRooms(mergedRooms);
       } catch (error) {
         console.error('Sanity fetch error:', error);
       }
