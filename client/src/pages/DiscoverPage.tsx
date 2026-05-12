@@ -147,15 +147,26 @@ export default function DiscoverPage() {
       try {
         const data = await client.fetch(PLACES_QUERY);
         if (data && data.length > 0) {
-          const mappedPlaces = data.map((p: any) => ({
-            id: p.id || p._id,
-            title: p.name,
-            image: p.featuredImage || p.gallery?.[0] || '/assets/BackgroundPC.jpg',
-            description: p.description,
-            distance: p.distance,
-            timingLabel: 'Timings',
-            timings: 'Contact for timings'
-          }));
+          const mappedPlaces = data.map((p: any) => {
+            // IMPROVED FALLBACK: If Sanity image is missing, try to find original image from hardcoded data
+            const sanityImage = p.featuredImage || p.gallery?.[0];
+            let fallbackImage = '/assets/BackgroundPC.jpg';
+            
+            if (!sanityImage) {
+              const original = defaultDiscoverData.find(d => d.id === p.id || d.title.includes(p.name));
+              if (original) fallbackImage = original.image;
+            }
+
+            return {
+              id: p.id || p._id,
+              title: p.name,
+              image: sanityImage || fallbackImage,
+              description: p.description,
+              distance: p.distance,
+              timingLabel: 'Timings',
+              timings: 'Contact for timings'
+            };
+          });
           setPlaces(mappedPlaces);
         }
       } catch (error) {

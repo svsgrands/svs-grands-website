@@ -91,14 +91,25 @@ export default function RoomsPage() {
         const data = await client.fetch(ROOMS_QUERY);
         if (data && data.length > 0) {
           // Map Sanity data to our frontend structure
-          const mappedRooms = data.map((r: any) => ({
-            id: r.id || r._id,
-            title: r.name,
-            bedTypes: r.occupancy || 'Double Bed',
-            image: r.coverImage || getRoomImage(r.id),
-            description: r.shortDescription || r.fullDescription,
-            amenities: r.amenities || []
-          }));
+          const mappedRooms = data.map((r: any) => {
+            // IMPROVED FALLBACK: If Sanity image is missing, use getRoomImage(id) or defaultRoomsData fallback
+            const sanityImage = r.coverImage;
+            let fallbackImage = getRoomImage(r.id);
+            
+            if (!sanityImage) {
+              const original = defaultRoomsData.find(d => d.id === r.id || d.title === r.name);
+              if (original) fallbackImage = original.image;
+            }
+
+            return {
+              id: r.id || r._id,
+              title: r.name,
+              bedTypes: r.occupancy || 'Double Bed',
+              image: sanityImage || fallbackImage,
+              description: r.shortDescription || r.fullDescription,
+              amenities: r.amenities || []
+            };
+          });
           setRooms(mappedRooms);
         }
       } catch (error) {

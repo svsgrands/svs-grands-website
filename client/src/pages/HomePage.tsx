@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { client, HOMEPAGE_QUERY } from '../lib/sanity';
+import { client, HOMEPAGE_QUERY, ROOMS_QUERY, urlFor } from '../lib/sanity';
 import ReservationBar from '../components/ReservationBar';
 
 // Import Swiper React components and modules
@@ -136,10 +136,21 @@ export default function HomePage() {
   const [phase, setPhase] = useState<'idle' | 'exit' | 'enter'>('idle');
   const timerRef = useRef<any>(null);
 
+  const getImageUrl = (source: any) => {
+    if (!source) return '/assets/BackgroundPC.jpg';
+    if (typeof source === 'string') return source;
+    try {
+      return urlFor(source).url();
+    } catch (err) {
+      return '/assets/BackgroundPC.jpg';
+    }
+  };
+
   // Dynamic States
   const [slides, setSlides] = useState(defaultSlides);
   const [aboutContent, setAboutContent] = useState('Located near the famous Sri Venkateswara Swamy Temple, Vadapalli, SVS Grands offers a peaceful and comfortable stay experience for pilgrims, families, and travelers. Designed with modern comfort and traditional hospitality, our rooms provide a relaxing atmosphere with convenient amenities, flexible stay options, and easy access to nearby spiritual destinations.');
   const [featuresList, setFeaturesList] = useState(defaultFeatures);
+  const [rooms, setRooms] = useState(defaultRoomCategories);
 
   const goToSlide = (index: number) => {
     if (index === current || phase !== 'idle' || !slides[index]) return;
@@ -177,6 +188,30 @@ export default function HomePage() {
               desc: f.description
             }));
             setFeaturesList(mappedFeatures);
+          }
+
+          // Fetch Rooms for Carousel
+          const roomsData = await client.fetch(ROOMS_QUERY);
+          if (roomsData && roomsData.length > 0) {
+            const mappedRooms = roomsData.map((r: any) => {
+              const sanityImage = r.coverImage;
+              let fallbackImage = '/assets/rooms/classic/1.png';
+              
+              if (!sanityImage) {
+                const original = defaultRoomCategories.find(d => d.id === r.id || d.name === r.name);
+                if (original) fallbackImage = original.image;
+              }
+
+              return {
+                id: r.id || r._id,
+                name: r.name,
+                image: sanityImage || fallbackImage,
+                price: r.price || '1000',
+                unit: r.unit || '/12hrs',
+                desc: r.shortDescription || r.fullDescription
+              };
+            });
+            setRooms(mappedRooms);
           }
         }
       } catch (error) {
@@ -380,10 +415,10 @@ export default function HomePage() {
               }}
               className="home-rooms-swiper"
             >
-              {defaultRoomCategories.map((room) => (
+              {rooms.map((room) => (
                 <SwiperSlide key={room.id}>
                   <div className="home-room-card" onClick={() => openBooking(room.id)}>
-                    <div className="home-room-image" style={{ backgroundImage: `url('${room.image}')` }} />
+                    <div className="home-room-image" style={{ backgroundImage: `url('${getImageUrl(room.image)}')` }} />
                     <div className="home-room-info">
                       <h3>{room.name}</h3>
                       <p className="home-room-price">From ₹{room.price} <small>{room.unit}</small></p>
