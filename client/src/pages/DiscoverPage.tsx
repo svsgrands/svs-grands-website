@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { client, PLACES_QUERY } from '../lib/sanity';
+import { client, PLACES_QUERY, urlFor } from '../lib/sanity';
 import './DiscoverPage.css';
 
 const defaultDiscoverData = [
@@ -114,6 +114,16 @@ const defaultDiscoverData = [
   }
 ];
 
+const getImageUrl = (source: any) => {
+  if (!source) return '/assets/BackgroundPC.jpg';
+  if (typeof source === 'string') return source;
+  try {
+    return urlFor(source).url();
+  } catch (err) {
+    return '/assets/BackgroundPC.jpg';
+  }
+};
+
 export default function DiscoverPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -199,7 +209,7 @@ export default function DiscoverPage() {
 
         <div 
           className={`discover-details-bg ${animPhase === 'animating' ? 'bg-reveal' : ''}`} 
-          style={{ backgroundImage: `url(${displayPlace?.image || '/assets/BackgroundPC.jpg'})`, zIndex: 1 }} 
+          style={{ backgroundImage: `url(${getImageUrl(displayPlace?.image)})`, zIndex: 1 }} 
         />
       </>
 
@@ -216,7 +226,7 @@ export default function DiscoverPage() {
                 onClick={() => openPlace(idx)}
                 style={{ animationDelay: animPhase === 'animating' ? `${0.4 + idx * 0.1}s` : '0s' }}
               >
-                <img src={place.image} alt={place.title} />
+                <img src={getImageUrl(place.image)} alt={place.title} />
                 <div className="discover-thumb-overlay">
                   <span>{place.title.split('—')[0].trim()}</span>
                 </div>

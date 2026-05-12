@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { calculatePrice, ROOM_NAMES, NORMAL_RATES } from '../utils/pricing';
 import type { RoomId } from '../utils/pricing';
-import { client, ROOMS_QUERY } from '../lib/sanity';
+import { client, ROOMS_QUERY, urlFor } from '../lib/sanity';
 import './RoomsPage.css';
 
 const getRoomImage = (id: string) => {
@@ -12,6 +12,16 @@ const getRoomImage = (id: string) => {
   if (id === 'CLASSIC') return '/assets/rooms/classic/1.png';
   if (id === 'STANDARD') return '/assets/rooms/standard/2.png';
   return '/assets/rooms/classic/1.png';
+};
+
+const getImageUrl = (source: any) => {
+  if (!source) return '/assets/BackgroundPC.jpg';
+  if (typeof source === 'string') return source;
+  try {
+    return urlFor(source).url();
+  } catch (err) {
+    return '/assets/BackgroundPC.jpg';
+  }
 };
 
 const getRoomDescription = (id: string) => {
@@ -106,15 +116,22 @@ export default function RoomsPage() {
       const newPricing: Record<string, { price: number; error?: string }> = {};
       
       rooms.forEach(room => {
-        const result = calculatePrice(ci, co, room.id as RoomId, guests);
-        newPricing[room.id] = {
-          price: result.totalPrice,
-          error: result.error
-        };
+        // SAFE CHECK: Ensure room.id is a valid RoomId before calculating price
+        const roomKey = room.id as RoomId;
+        if (NORMAL_RATES[roomKey]) {
+          const result = calculatePrice(ci, co, roomKey, guests);
+          newPricing[room.id] = {
+            price: result.totalPrice,
+            error: result.error
+          };
+        } else {
+          // Fallback price if ID is custom/Sanity-only
+          newPricing[room.id] = { price: typeof room.price === 'number' ? room.price : Number(room.price) || 0 };
+        }
       });
       setPricingMap(newPricing);
-    } catch {
-      // Intentionally empty
+    } catch (err) {
+      console.error("Pricing calculation error:", err);
     }
   }, [checkInDate, checkOutDate, guests, rooms]);
 
@@ -188,7 +205,7 @@ export default function RoomsPage() {
           <div 
             key={`active-${activeRoomIndex}`}
             className={`rooms-details-bg ${animPhase === 'animating' ? 'bg-reveal' : ''}`} 
-            style={{ backgroundImage: `url(${activeRoom.image})`, zIndex: 1 }} 
+            style={{ backgroundImage: `url(${getImageUrl(activeRoom.image)})`, zIndex: 1 }} 
           />
         </>
       )}
@@ -213,7 +230,7 @@ export default function RoomsPage() {
                     className={`room-grid-card ${idx === 0 ? 'featured' : 'standard'}`} 
                     onClick={() => openDetails(idx)}
                   >
-                    <img src={room.image} alt={room.title} className="room-grid-img" />
+                    <img src={getImageUrl(room.image)} alt={room.title} className="room-grid-img" />
                     <div className="room-card-overlay">
                       <h2>{room.title.toUpperCase()}</h2>
                       <button className="btn-know-more">KNOW MORE</button>
@@ -237,7 +254,7 @@ export default function RoomsPage() {
                   onClick={() => openDetails(idx)}
                   style={{ animationDelay: animPhase === 'animating' ? `${0.4 + idx * 0.1}s` : '0s' }}
                 >
-                  <img src={room.image} alt={room.title} />
+                  <img src={getImageUrl(room.image)} alt={room.title} />
                   <div className="rd-thumb-overlay">
                     <span>{room.title.toUpperCase()}</span>
                   </div>
@@ -258,12 +275,12 @@ export default function RoomsPage() {
             <p className="rd-description stagger-3">{activeRoom.description}</p>
 
             <div className="rd-meta-row stagger-4">
-              <span>🛏️ {activeRoom.bedTypes}</span>
-              <span>👥 Max {NORMAL_RATES[activeRoom.id].maxPersons} Guests</span>
+              <span>🛏️ {activeRoom?.bedTypes || 'Double Bed'}</span>
+              <span>👥 Max {NORMAL_RATES[activeRoom?.id as RoomId]?.maxPersons || 2} Guests</span>
             </div>
 
             <div className="rd-amenities stagger-5">
-              {activeRoom.amenities.map(a => (
+              {activeRoom?.amenities?.map((a: string) => (
                 <span key={a}>{a}</span>
               ))}
             </div>
@@ -273,9 +290,9 @@ export default function RoomsPage() {
                 <div className="room-rate-error">{pricing.error}</div>
               ) : (
                 <>
-                  <div className="rd-price">₹{(pricing?.price || 0).toLocaleString('en-IN')}</div>
+                  <div className="rd-price">₹{(pricing?.price || (typeof activeRoom?.price === 'number' ? activeRoom.price : 0)).toLocaleString('en-IN')}</div>
                   <span className="rd-price-note">per night · taxes included</span>
-                  {guests > NORMAL_RATES[activeRoom.id].includedPersons && (
+                  {activeRoom?.id && NORMAL_RATES[activeRoom.id as RoomId] && guests > NORMAL_RATES[activeRoom.id as RoomId].includedPersons && (
                     <div className="rd-price-note rd-extra-charge">Includes extra guest charge</div>
                   )}
                 </>
