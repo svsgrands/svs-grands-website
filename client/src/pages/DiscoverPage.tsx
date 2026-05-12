@@ -158,7 +158,6 @@ export default function DiscoverPage() {
           if (sanityMatch) {
             return {
               ...def,
-              title: sanityMatch.name || def.title,
               image: sanityMatch.featuredImage || sanityMatch.gallery?.[0] || def.image,
               description: sanityMatch.description || def.description,
               distance: sanityMatch.distance || def.distance,
