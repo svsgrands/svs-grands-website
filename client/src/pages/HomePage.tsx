@@ -216,7 +216,7 @@ export default function HomePage() {
                   id: r.id || r._id,
                   title: r.name,
                   image: r.coverImage || (original ? original.image : '/assets/rooms/classic/1.png'),
-                  description: r.shortDescription || (original ? original.description : 'Luxury stay experience.')
+                  description: r.shortDescription || (original ? original.desc : 'Luxury stay experience.')
                 };
               });
               setRooms(mappedRooms);
