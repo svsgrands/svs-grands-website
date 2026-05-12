@@ -40,12 +40,14 @@ const defaultRoomsData = Object.keys(ROOM_NAMES).map((key) => {
   const isAC = id === 'CLASSIC' || id === 'DELUXE' || id === 'SUPERIOR';
   const isOptionalTV = id === 'CLASSIC' || id === 'STANDARD';
 
+  const rates = NORMAL_RATES[id];
   return {
     id,
     title: ROOM_NAMES[id],
     bedTypes: isFamily ? 'Two Double Beds' : 'Single Double Bed',
     image: getRoomImage(id),
     description: getRoomDescription(id),
+    price: rates.price12h || rates.price24h,
     amenities: [
       isAC ? 'Air Conditioning' : 'Fan',
       'Free WiFi', 
@@ -107,6 +109,7 @@ export default function RoomsPage() {
               bedTypes: r.occupancy || 'Double Bed',
               image: sanityImage || fallbackImage,
               description: r.shortDescription || r.fullDescription,
+              price: r.price,
               amenities: r.amenities || []
             };
           });
