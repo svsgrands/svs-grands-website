@@ -246,7 +246,17 @@ export default function RoomsPage() {
                     <img src={getImageUrl(room.image)} alt={room.title} className="room-grid-img" />
                     <div className="room-card-overlay">
                       <h2>{room.title.toUpperCase()}</h2>
-                      <button className="btn-know-more">KNOW MORE</button>
+                    <button
+  className="btn-know-more"
+  onClick={() =>
+    window.open(
+      "https://asiatech.in/booking_engine/index3?token=MTA4NTA=",
+      "_blank"
+    )
+  }
+>
+  BOOK NOW
+</button>
                     </div>
                   </div>
                 ))}
