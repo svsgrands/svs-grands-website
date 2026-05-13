@@ -1,9 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { calculatePrice, ROOM_NAMES, NORMAL_RATES } from '../utils/pricing';
 import type { RoomId } from '../utils/pricing';
 import { client, ROOMS_QUERY, urlFor } from '../lib/sanity';
 import './RoomsPage.css';
+
+interface SanityRoomMatch {
+  id?: string;
+  name: string;
+  isVisible?: boolean;
+  occupancy?: string;
+  coverImage?: string;
+  shortDescription?: string;
+  fullDescription?: string;
+  price?: number;
+  amenities?: string[];
+}
 
 const getRoomImage = (id: string) => {
   if (id === 'DELUXE') return '/assets/rooms/deluxe/2.png';
@@ -14,12 +26,12 @@ const getRoomImage = (id: string) => {
   return '/assets/rooms/classic/1.png';
 };
 
-const getImageUrl = (source: any) => {
+const getImageUrl = (source: string | object | undefined) => {
   if (!source) return '/assets/BackgroundPC.jpg';
   if (typeof source === 'string') return source;
   try {
     return urlFor(source).url();
-  } catch (err) {
+  } catch (_err) {
     return '/assets/BackgroundPC.jpg';
   }
 };
@@ -71,13 +83,39 @@ export default function RoomsPage() {
   const [checkInDate] = useState(today);
   const [checkOutDate] = useState(tomorrow.toISOString().split('T')[0]);
   const [guests] = useState(2);
-  const [pricingMap, setPricingMap] = useState<Record<string, { price: number; error?: string }>>({});
   
   // Animation States
   const [animPhase, setAnimPhase] = useState<'idle' | 'reset' | 'animating'>('idle');
   const [prevImage, setPrevImage] = useState<string | null>(null);
   const lastImageRef = useRef<string | null>(null);
   const LISTING_BG = '/assets/BackgroundPC.jpg';
+
+  // Pricing calculation moved to useMemo to satisfy ESLint and optimize performance
+  const pricingMap = useMemo(() => {
+    try {
+      const ci = new Date(`${checkInDate}T12:00`);
+      const co = new Date(`${checkOutDate}T12:00`);
+      
+      const newPricing: Record<string, { price: number; error?: string }> = {};
+      
+      rooms.forEach(room => {
+        const roomKey = room.id as RoomId;
+        if (NORMAL_RATES[roomKey]) {
+          const result = calculatePrice(ci, co, roomKey, guests);
+          newPricing[room.id] = {
+            price: result.totalPrice,
+            error: result.error
+          };
+        } else {
+          newPricing[room.id] = { price: typeof room.price === 'number' ? room.price : Number(room.price) || 0 };
+        }
+      });
+      return newPricing;
+    } catch (err) {
+      console.error("Pricing calculation error:", err);
+      return {};
+    }
+  }, [checkInDate, checkOutDate, guests, rooms]);
 
   // Hash Routing Logic
   const hash = location.hash;
@@ -88,16 +126,14 @@ export default function RoomsPage() {
 
   // Fetch Sanity Content
   useEffect(() => {
-    const fetchRooms = async () => {
+    const fetchRoomsFromSanity = async () => {
       try {
-        const data = await client.fetch(ROOMS_QUERY);
+        const data = await client.fetch<SanityRoomMatch[]>(ROOMS_QUERY);
         
-        // PRESERVE ORDER & VISIBILITY: Use defaultRoomsData as the base array
         const mergedRooms = defaultRoomsData.map(def => {
-          const sanityMatch = data?.find((r: any) => r.id === def.id || r.name === def.title);
+          const sanityMatch = data?.find((r) => r.id === def.id || r.name === def.title);
           
           if (sanityMatch) {
-            // If explicitly hidden in Sanity, return null to filter out later
             if (sanityMatch.isVisible === false) return null;
 
             return {
@@ -111,79 +147,43 @@ export default function RoomsPage() {
             };
           }
           return def;
-        }).filter(Boolean) as any[];
+        }).filter((r): r is NonNullable<typeof r> => r !== null);
 
         setRooms(mergedRooms);
-      } catch (error) {
-        console.error('Sanity fetch error:', error);
+      } catch (err) {
+        console.error('Sanity fetch error:', err);
       }
     };
-    fetchRooms();
+    fetchRoomsFromSanity();
   }, []);
-
-  useEffect(() => {
-    try {
-      const ci = new Date(`${checkInDate}T12:00`);
-      const co = new Date(`${checkOutDate}T12:00`);
-      
-      const newPricing: Record<string, { price: number; error?: string }> = {};
-      
-      rooms.forEach(room => {
-        // SAFE CHECK: Ensure room.id is a valid RoomId before calculating price
-        const roomKey = room.id as RoomId;
-        if (NORMAL_RATES[roomKey]) {
-          const result = calculatePrice(ci, co, roomKey, guests);
-          newPricing[room.id] = {
-            price: result.totalPrice,
-            error: result.error
-          };
-        } else {
-          // Fallback price if ID is custom/Sanity-only
-          newPricing[room.id] = { price: typeof room.price === 'number' ? room.price : Number(room.price) || 0 };
-        }
-      });
-      setPricingMap(newPricing);
-    } catch (err) {
-      console.error("Pricing calculation error:", err);
-    }
-  }, [checkInDate, checkOutDate, guests, rooms]);
 
   // Trigger animations on room change or view entry
   useEffect(() => {
     if (isDetailsView && activeRoom) {
-      // Force scroll to top to ensure cinematic reveal is visible
       window.scrollTo(0, 0);
 
-      // 1. Determine the 'from' image for the background layer
       if (lastImageRef.current) {
-        // We are switching between rooms
         if (lastImageRef.current !== activeRoom.image) {
           setPrevImage(lastImageRef.current);
         }
       } else {
-        // We are entering from the listing view
         setPrevImage(LISTING_BG);
       }
       
-      // 2. Prepare for new animation
       setAnimPhase('reset');
-      
-      // 3. Update ref for next transition
       lastImageRef.current = activeRoom.image;
       
-      // 4. Start new animation after a tiny tick
       const timer = setTimeout(() => {
         setAnimPhase('animating');
       }, 100);
 
       return () => clearTimeout(timer);
     } else {
-      // Clean up when leaving details
       setAnimPhase('idle');
       setPrevImage(null);
       lastImageRef.current = null;
     }
-  }, [isDetailsView, activeRoomIndex, activeRoom?.image]);
+  }, [isDetailsView, activeRoomIndex, activeRoom, LISTING_BG]);
 
   const handleBookNow = (roomId: string) => {
     navigate(`/checkout?roomType=${roomId}&checkIn=${checkInDate}&checkOut=${checkOutDate}&guests=${guests}`);
@@ -197,16 +197,13 @@ export default function RoomsPage() {
     navigate(`/rooms`);
   };
 
-  // Pre-load prices for the active room
   const pricing = activeRoom ? pricingMap[activeRoom.id] : null;
 
   return (
     <div className={`rooms-page-container ${isDetailsView ? 'is-details' : 'is-listing'} phase-${animPhase}`}>
       
-      {/* Background for Details View */}
       {isDetailsView && (
         <>
-          {/* Layer 0: Previous Image (static underneath) */}
           {prevImage && (
             <div 
               className="rooms-details-bg" 
@@ -214,7 +211,6 @@ export default function RoomsPage() {
             />
           )}
 
-          {/* Layer 1: Active Image (fading in & cinematic reveal) */}
           <div 
             key={`active-${activeRoomIndex}`}
             className={`rooms-details-bg ${animPhase === 'animating' ? 'bg-reveal' : ''}`} 
@@ -265,7 +261,6 @@ export default function RoomsPage() {
         </div>
       ) : (
         <div className="rooms-details-view">
-          {/* Left Sidebar — matches reference */}
           <aside className={`rd-sidebar ${animPhase === 'animating' ? 'sidebar-slide-in' : ''}`}>
             <h3 className="rd-sidebar-title">Rooms</h3>
 
@@ -285,11 +280,9 @@ export default function RoomsPage() {
               ))}
             </div>
 
-
             <button className="rd-back-btn" onClick={goToListing}>← All Rooms</button>
           </aside>
 
-          {/* Content Panel — translucent overlay beside sidebar */}
           <div className={`rd-content-panel ${animPhase === 'animating' ? 'panel-slide-in' : ''}`}>
             <h1 className="rd-room-title stagger-1">{activeRoom.title}</h1>
 

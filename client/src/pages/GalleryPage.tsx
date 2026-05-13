@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { client, GALLERY_QUERY, urlFor } from '../lib/sanity';
 
 type MediaType = 'image' | 'video';
@@ -10,6 +10,19 @@ interface GalleryItem {
   category: Category;
   type: MediaType;
   poster?: string;
+}
+
+interface SanityGalleryCategory {
+  category: Category;
+  images?: { asset?: object; src?: string; caption?: string; alt?: string }[];
+  videos?: { 
+    videoUrl?: string; 
+    videoFile?: { asset?: { _ref: string } }; 
+    src?: string; 
+    caption?: string; 
+    alt?: string; 
+    poster?: object; 
+  }[];
 }
 
 const defaultGalleryItems: GalleryItem[] = [
@@ -76,14 +89,14 @@ export default function GalleryPage() {
   useEffect(() => {
     const fetchGallery = async () => {
       try {
-        const data = await client.fetch(GALLERY_QUERY);
+        const data = await client.fetch<SanityGalleryCategory[]>(GALLERY_QUERY);
         if (data && data.length > 0) {
           const allItems: GalleryItem[] = [];
-          data.forEach((cat: any) => {
+          data.forEach((cat) => {
             if (cat.images) {
-              cat.images.forEach((img: any) => {
+              cat.images.forEach((img) => {
                 allItems.push({
-                  src: img.asset ? urlFor(img).url() : img.src,
+                  src: img.asset ? urlFor(img).url() : (img.src || ''),
                   alt: img.caption || img.alt || 'Gallery Image',
                   category: cat.category,
                   type: 'image'
@@ -91,13 +104,14 @@ export default function GalleryPage() {
               });
             }
             if (cat.videos) {
-              cat.videos.forEach((vid: any) => {
+              cat.videos.forEach((vid) => {
+                const config = client.config();
                 allItems.push({
-                  src: vid.videoUrl || (vid.videoFile?.asset ? `https://cdn.sanity.io/files/${client.config().projectId}/${client.config().dataset}/${vid.videoFile.asset._ref.split('-')[1]}.${vid.videoFile.asset._ref.split('-')[2]}` : vid.src),
+                  src: vid.videoUrl || (vid.videoFile?.asset ? `https://cdn.sanity.io/files/${config.projectId}/${config.dataset}/${vid.videoFile.asset._ref.split('-')[1]}.${vid.videoFile.asset._ref.split('-')[2]}` : (vid.src || '')),
                   alt: vid.caption || vid.alt || 'Gallery Video',
                   category: cat.category,
                   type: 'video',
-                  poster: vid.poster ? urlFor(vid.poster).url() : vid.poster
+                  poster: vid.poster ? urlFor(vid.poster).url() : (vid.src || '')
                 });
               });
             }
@@ -126,12 +140,19 @@ export default function GalleryPage() {
     : items.filter(item => item.category === activeCategory);
 
   const openLightbox = (idx: number) => setLightboxIdx(idx);
-  const closeLightbox = () => {
+  
+  const closeLightbox = useCallback(() => {
     if (lightboxVideoRef.current) lightboxVideoRef.current.pause();
     setLightboxIdx(null);
-  };
-  const prevItem = () => setLightboxIdx(prev => prev !== null ? (prev - 1 + filtered.length) % filtered.length : 0);
-  const nextItem = () => setLightboxIdx(prev => prev !== null ? (prev + 1) % filtered.length : 0);
+  }, []);
+
+  const prevItem = useCallback(() => {
+    setLightboxIdx(prev => prev !== null ? (prev - 1 + filtered.length) % filtered.length : 0);
+  }, [filtered.length]);
+
+  const nextItem = useCallback(() => {
+    setLightboxIdx(prev => prev !== null ? (prev + 1) % filtered.length : 0);
+  }, [filtered.length]);
 
   // Keyboard navigation for lightbox
   useEffect(() => {
@@ -143,8 +164,7 @@ export default function GalleryPage() {
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lightboxIdx, filtered.length]);
+  }, [lightboxIdx, closeLightbox, prevItem, nextItem]);
 
 
   return (

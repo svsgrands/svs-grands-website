@@ -19,7 +19,7 @@ export const fetchRooms = async () => {
   });
 };
 
-export const checkAvailability = async (_checkIn: string, _checkOut: string, _type?: string) => {
+export const checkAvailability = async () => {
   // Always return available in static mode
   return { available: true };
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { client, HOMEPAGE_QUERY, ROOMS_QUERY, urlFor } from '../lib/sanity';
 import ReservationBar from '../components/ReservationBar';
@@ -13,6 +13,30 @@ import 'swiper/css/free-mode';
 
 interface LayoutContext {
   openBooking: (roomType?: string) => void;
+}
+
+interface SanityHeroMedia {
+  image?: string;
+  fallbackImage?: string;
+}
+
+interface SanityHomepageData {
+  heroMedia?: SanityHeroMedia[];
+  heroHeading?: string;
+  heroSubheading?: string;
+  aboutContent?: string;
+  features?: { title: string; description: string }[];
+  benefits?: { title: string; description: string }[];
+}
+
+interface SanityRoomData {
+  id?: string;
+  _id: string;
+  name: string;
+  isFeatured?: boolean;
+  isVisible?: boolean;
+  coverImage?: string;
+  shortDescription?: string;
 }
 
 const defaultSlides = [
@@ -32,7 +56,7 @@ const defaultSlides = [
     bgImage: '/assets/rooms/standard/2.png',
     fgImage: '/assets/rooms/superior/1.png',
     thumbs: [
-      '/assets/rooms/superior/2.png',
+      '/assets/superior/2.png',
       '/assets/rooms/deluxe/2.png',
     ],
   },
@@ -134,14 +158,14 @@ export default function HomePage() {
   const { openBooking } = useOutletContext<LayoutContext>();
   const [current, setCurrent] = useState(0);
   const [phase, setPhase] = useState<'idle' | 'exit' | 'enter'>('idle');
-  const timerRef = useRef<any>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const getImageUrl = (source: any) => {
+  const getImageUrl = (source: string | object | undefined) => {
     if (!source) return '/assets/BackgroundPC.jpg';
     if (typeof source === 'string') return source;
     try {
       return urlFor(source).url();
-    } catch (err) {
+    } catch (_err) {
       return '/assets/BackgroundPC.jpg';
     }
   };
@@ -156,7 +180,7 @@ export default function HomePage() {
     { title: 'Group Booking', text: '10+ Rooms available for religious groups, temple visitors, and corporate stays at special tariff.', cta: 'CALL 8341199779' }
   ]);
 
-  const goToSlide = (index: number) => {
+  const goToSlide = useCallback((index: number) => {
     if (index === current || phase !== 'idle' || !slides[index]) return;
     setPhase('exit');
 
@@ -167,15 +191,15 @@ export default function HomePage() {
         setTimeout(() => setPhase('idle'), 1000);
       }, 100);
     }, 900);
-  };
+  }, [current, phase, slides]);
 
   useEffect(() => {
     const fetchHome = async () => {
       try {
-        const data = await client.fetch(HOMEPAGE_QUERY);
+        const data = await client.fetch<SanityHomepageData>(HOMEPAGE_QUERY);
         if (data) {
           if (data.heroMedia && data.heroMedia.length > 0) {
-            const mappedSlides = data.heroMedia.map((m: any) => ({
+            const mappedSlides = data.heroMedia.map((m) => ({
               boldText: data.heroHeading || 'WELCOME TO',
               normalText: data.heroSubheading || 'SVS GRANDS',
               bgImage: m.image || m.fallbackImage || '/assets/BackgroundPC.jpg',
@@ -186,7 +210,7 @@ export default function HomePage() {
           }
           if (data.aboutContent) setAboutContent(data.aboutContent);
           if (data.features && data.features.length > 0) {
-            const mappedFeatures = data.features.map((f: any, i: number) => ({
+            const mappedFeatures = data.features.map((f, i) => ({
               icon: defaultFeatures[i]?.icon || defaultFeatures[0].icon,
               title: f.title,
               desc: f.description
@@ -195,7 +219,7 @@ export default function HomePage() {
           }
           
           if (data.benefits && data.benefits.length > 0) {
-            const mappedBenefits = data.benefits.map((b: any) => ({
+            const mappedBenefits = data.benefits.map((b) => ({
               title: b.title,
               text: b.description,
               cta: 'CALL 8341199779' // Hardcoded as per cinematic requirement for this project
@@ -204,19 +228,21 @@ export default function HomePage() {
           }
 
           // Fetch Rooms for Carousel
-          const roomsData = await client.fetch(ROOMS_QUERY);
+          const roomsData = await client.fetch<SanityRoomData[]>(ROOMS_QUERY);
           if (roomsData && roomsData.length > 0) {
             // Filter for only featured and visible rooms for the homepage carousel
-            const featuredRooms = roomsData.filter((r: any) => r.isFeatured !== false && r.isVisible !== false);
+            const featuredRooms = roomsData.filter((r) => r.isFeatured !== false && r.isVisible !== false);
             
             if (featuredRooms.length > 0) {
-              const mappedRooms = featuredRooms.map((r: any) => {
+              const mappedRooms = featuredRooms.map((r) => {
                 const original = defaultRoomCategories.find(d => d.id === r.id || d.name === r.name);
                 return {
                   id: r.id || r._id,
-                  title: r.name,
+                  name: r.name,
                   image: r.coverImage || (original ? original.image : '/assets/rooms/classic/1.png'),
-                  description: r.shortDescription || (original ? original.desc : 'Luxury stay experience.')
+                  desc: r.shortDescription || (original ? original.desc : 'Luxury stay experience.'),
+                  price: original ? original.price : '800',
+                  unit: original ? original.unit : '/12hrs'
                 };
               });
               setRooms(mappedRooms);
@@ -235,8 +261,10 @@ export default function HomePage() {
     timerRef.current = setTimeout(() => {
       goToSlide((current + 1) % slides.length);
     }, 5000);
-    return () => clearTimeout(timerRef.current);
-  }, [current, phase, slides.length]);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [current, phase, slides.length, goToSlide]);
 
   const slide = slides[current] || defaultSlides[0];
   const isVisible = phase === 'idle' || phase === 'enter';

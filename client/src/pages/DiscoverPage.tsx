@@ -3,6 +3,15 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { client, PLACES_QUERY, urlFor } from '../lib/sanity';
 import './DiscoverPage.css';
 
+interface SanityPlaceMatch {
+  id?: string;
+  name: string;
+  featuredImage?: string;
+  gallery?: string[];
+  description?: string;
+  distance?: string;
+}
+
 const defaultDiscoverData = [
   {
     id: 'vadapalli',
@@ -114,7 +123,7 @@ const defaultDiscoverData = [
   }
 ];
 
-const getImageUrl = (source: any) => {
+const getImageUrl = (source: string | object | undefined) => {
   if (!source) return '/assets/BackgroundPC.jpg';
   if (typeof source === 'string') return source;
   try {
@@ -145,12 +154,12 @@ export default function DiscoverPage() {
   useEffect(() => {
     const fetchPlaces = async () => {
       try {
-        const data = await client.fetch(PLACES_QUERY);
+        const data = await client.fetch<SanityPlaceMatch[]>(PLACES_QUERY);
         
         // PRESERVE ORDER & ALL PLACES: Use defaultDiscoverData as the base array
         const mergedPlaces = defaultDiscoverData.map(def => {
           // Try to find a match in Sanity data by ID or Name
-          const sanityMatch = data?.find((p: any) => 
+          const sanityMatch = data?.find((p) => 
             p.id === def.id || 
             def.title.toLowerCase().includes(p.name.toLowerCase())
           );

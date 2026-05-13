@@ -10,7 +10,8 @@ export const client = createClient({
 
 const builder = imageUrlBuilder(client)
 
-export function urlFor(source: any) {
+// Use a more specific type than any to satisfy ESLint
+export function urlFor(source: object | string) {
   return builder.image(source)
 }
 

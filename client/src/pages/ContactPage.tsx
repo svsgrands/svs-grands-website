@@ -1,14 +1,23 @@
 import { useState, useEffect } from 'react';
 import { client, SETTINGS_QUERY } from '../lib/sanity';
 
+interface SanitySettings {
+  hotelName?: string;
+  address?: string;
+  phoneNumber?: string;
+  email?: string;
+  whatsappLink?: string;
+  instagramLink?: string;
+}
+
 export default function ContactPage() {
   const [fromLocation, setFromLocation] = useState('');
-  const [settings, setSettings] = useState<any>(null);
+  const [settings, setSettings] = useState<SanitySettings | null>(null);
 
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const data = await client.fetch(SETTINGS_QUERY);
+        const data = await client.fetch<SanitySettings>(SETTINGS_QUERY);
         if (data) setSettings(data);
       } catch (error) {
         console.error('Sanity settings fetch error:', error);
