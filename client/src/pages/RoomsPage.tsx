@@ -313,12 +313,17 @@ export default function RoomsPage() {
             </div>
 
             <button
-              className="btn-primary rd-book-btn stagger-7"
-              onClick={() => handleBookNow(activeRoom.id)}
-              disabled={!!pricing?.error}
-            >
-              Reserve This Room
-            </button>
+  className="btn-primary rd-book-btn stagger-7"
+  onClick={() =>
+    window.open(
+      "https://asiatech.in/booking_engine/index3?token=MTA4NTA=",
+      "_blank"
+    )
+  }
+  disabled={!!pricing?.error}
+>
+  Reserve This Room
+</button>
           </div>
         </div>
       )}
