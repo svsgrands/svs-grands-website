@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 export default function Navbar({ settings }: { settings: any }) {
   const [scrolled, setScrolled] = useState(false);
@@ -8,7 +8,6 @@ export default function Navbar({ settings }: { settings: any }) {
   const lastScrollY = useRef(0);
 
   const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {

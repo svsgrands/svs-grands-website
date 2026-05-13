@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Link, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 import { client, HOMEPAGE_QUERY, ROOMS_QUERY, urlFor } from '../lib/sanity';
 import ReservationBar from '../components/ReservationBar';
 

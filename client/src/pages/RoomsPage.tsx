@@ -185,9 +185,6 @@ export default function RoomsPage() {
     }
   }, [isDetailsView, activeRoomIndex, activeRoom, LISTING_BG]);
 
-  const handleBookNow = (roomId: string) => {
-    navigate(`/checkout?roomType=${roomId}&checkIn=${checkInDate}&checkOut=${checkOutDate}&guests=${guests}`);
-  };
 
   const openDetails = (index: number) => {
     navigate(`/rooms#${index}`);
