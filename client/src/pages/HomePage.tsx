@@ -432,7 +432,15 @@ export default function HomePage() {
                       <h3>{room.name}</h3>
                       <p className="home-room-price">From ₹{room.price} <small>{room.unit}</small></p>
                       <p className="home-room-desc">{room.desc}</p>
-                      <Link to="/rooms" className="home-room-link" onClick={(e) => e.stopPropagation()}>View Details →</Link>
+                     <a
+  href="https://asiatech.in/booking_engine/index3?token=MTA4NTA="
+  target="_blank"
+  rel="noopener noreferrer"
+  className="home-room-link"
+  onClick={(e) => e.stopPropagation()}
+>
+  Book Now →
+</a>
                     </div>
                   </div>
                 </SwiperSlide>
