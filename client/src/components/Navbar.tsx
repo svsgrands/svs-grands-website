@@ -154,9 +154,17 @@ export default function Navbar({ settings }: { settings: any }) {
                 <span>{settings?.phoneNumber || "+91-8341199779"}</span>
               </div>
             </a>
-            <button className="navbar-book-btn" onClick={() => navigate('/checkout')}>
-              Book Now
-            </button>
+            <button
+  className="navbar-book-btn"
+  onClick={() =>
+    window.open(
+      "https://asiatech.in/booking_engine/index3?token=MTA4NTA=",
+      "_blank"
+    )
+  }
+>
+  Book Now
+</button>
           </div>
 
           <button className={`hamburger ${menuOpen ? 'open' : ''}`} onClick={() => setMenuOpen(!menuOpen)}>
