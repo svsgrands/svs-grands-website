@@ -323,7 +323,7 @@ export default function RoomsPage() {
   disabled={!!pricing?.error}
 >
   Reserve This Room
-</button>
+</button> 
           </div>
         </div>
       )}
