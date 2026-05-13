@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { ROOM_NAMES } from '../utils/pricing';
 import type { RoomId } from '../utils/pricing';
 import DateRangePicker from './DateRangePicker';
@@ -9,7 +8,6 @@ interface ReservationBarProps {
 }
 
 export default function ReservationBar({ inline }: ReservationBarProps) {
-  const navigate = useNavigate();
   const today = new Date().toISOString().split('T')[0];
 
   const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
@@ -20,13 +18,18 @@ export default function ReservationBar({ inline }: ReservationBarProps) {
   const [guests, setGuests] = useState(1);
 
   const handleBook = () => {
-    navigate(`/checkout?roomType=${roomType}&checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`);
+    window.open(
+      "https://asiatech.in/booking_engine/index3?token=MTA4NTA=",
+      "_blank"
+    );
   };
 
   return (
     <div className={`reservation-bar ${inline ? 'reservation-bar--inline' : ''}`}>
       <div className="reservation-bar-inner">
-        <div className="reservation-bar-title">{inline ? 'BOOK ONLINE' : 'RESERVATION'}</div>
+        <div className="reservation-bar-title">
+          {inline ? 'BOOK ONLINE' : 'RESERVATION'}
+        </div>
 
         <div className="reservation-bar-field" style={{ flex: 1.5 }}>
           <DateRangePicker
@@ -39,12 +42,20 @@ export default function ReservationBar({ inline }: ReservationBarProps) {
           />
         </div>
 
-        <div className="reservation-bar-divider" style={{ margin: inline ? '0 32px' : '0 24px' }} />
+        <div
+          className="reservation-bar-divider"
+          style={{ margin: inline ? '0 32px' : '0 24px' }}
+        />
 
         <div className="reservation-bar-field">
-          <select value={roomType} onChange={e => setRoomType(e.target.value as RoomId)}>
+          <select
+            value={roomType}
+            onChange={e => setRoomType(e.target.value as RoomId)}
+          >
             {Object.entries(ROOM_NAMES).map(([id, name]) => (
-              <option key={id} value={id}>{name}</option>
+              <option key={id} value={id}>
+                {name}
+              </option>
             ))}
           </select>
         </div>
@@ -52,10 +63,15 @@ export default function ReservationBar({ inline }: ReservationBarProps) {
         <div className="reservation-bar-divider" />
 
         <div className="reservation-bar-field">
-          <select value={guests} onChange={e => setGuests(+e.target.value)}>
-             {Array.from({ length: 5 }, (_, i) => i + 1).map(n => 
-               <option key={n} value={n}>{n} Guest{n > 1 ? 's' : ''}</option>
-             )}
+          <select
+            value={guests}
+            onChange={e => setGuests(+e.target.value)}
+          >
+            {Array.from({ length: 5 }, (_, i) => i + 1).map(n => (
+              <option key={n} value={n}>
+                {n} Guest{n > 1 ? 's' : ''}
+              </option>
+            ))}
           </select>
         </div>
 
