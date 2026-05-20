@@ -1,91 +1,94 @@
-import { useState } from 'react';
-import { ROOM_NAMES } from '../utils/pricing';
-import type { RoomId } from '../utils/pricing';
-import DateRangePicker from './DateRangePicker';
+import { useEffect, useRef } from 'react';
 
-interface ReservationBarProps {
-  inline?: boolean;
-}
+export default function ReservationBar({ inline }: { inline?: boolean }) {
+  const containerRef = useRef<HTMLDivElement>(null);
 
-export default function ReservationBar({ inline }: ReservationBarProps) {
-  const today = new Date().toISOString().split('T')[0];
+  useEffect(() => {
+    // Inject CSS links
+    const cssLinks = [
+      '//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css',
+      'https://asiatech.in/booking_engine/admin/css/widgetsearch.css',
+    ];
+    const addedLinks: HTMLLinkElement[] = [];
+    cssLinks.forEach(href => {
+      if (!document.querySelector(`link[href="${href}"]`)) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = href;
+        document.head.appendChild(link);
+        addedLinks.push(link);
+      }
+    });
 
-  const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+    // Inject custom style
+    const style = document.createElement('style');
+    style.textContent = `
+      #widgetform { background: #fff; max-width: 515px; }
+      #widgetform table { border: 3px solid #b29259; }
+      #widgetform a { background: #b29259; margin-top: 20px; }
+    `;
+    document.head.appendChild(style);
 
-  const [checkIn, setCheckIn] = useState(today);
-  const [checkOut, setCheckOut] = useState(tomorrow);
-  const [roomType, setRoomType] = useState<RoomId>('CLASSIC');
-  const [guests, setGuests] = useState(1);
+    // Inject scripts in order
+    const scripts = [
+      '//ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js',
+      '//code.jquery.com/ui/1.12.1/jquery-ui.js',
+      'https://asiatech.in/booking_engine/admin/js/widgetsearching.js',
+    ];
 
-  const handleBook = () => {
-    window.open(
-      "https://asiatech.in/booking_engine/index3?token=MTA4NTA=",
-      "_blank"
+    const addedScripts: HTMLScriptElement[] = [];
+    const loadScript = (src: string, onLoad?: () => void) => {
+      if (document.querySelector(`script[src="${src}"]`)) {
+        onLoad?.();
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = false;
+      if (onLoad) script.onload = onLoad;
+      document.body.appendChild(script);
+      addedScripts.push(script);
+    };
+
+    // Chain scripts so each loads after the previous
+    loadScript(scripts[0], () =>
+      loadScript(scripts[1], () =>
+        loadScript(scripts[2])
+      )
     );
-  };
+
+    return () => {
+      addedLinks.forEach(l => l.remove());
+      addedScripts.forEach(s => s.remove());
+      style.remove();
+    };
+  }, []);
 
   return (
-    <div className={`reservation-bar ${inline ? 'reservation-bar--inline' : ''}`}>
-      <div className="reservation-bar-inner">
-        <div className="reservation-bar-title">
-          {inline ? 'BOOK ONLINE' : 'RESERVATION'}
-        </div>
-
-        <div className="reservation-bar-field" style={{ flex: 1.5 }}>
-          <DateRangePicker
-            checkInDate={checkIn}
-            checkOutDate={checkOut}
-            onCheckInChange={setCheckIn}
-            onCheckOutChange={setCheckOut}
-            direction={inline ? 'up' : 'up'}
-            variant="compact"
-          />
-        </div>
-
-        <div
-          className="reservation-bar-divider"
-          style={{ margin: inline ? '0 32px' : '0 24px' }}
-        />
-
-        <div className="reservation-bar-field">
-          <select
-            value={roomType}
-            onChange={e => setRoomType(e.target.value as RoomId)}
-          >
-            {Object.entries(ROOM_NAMES).map(([id, name]) => (
-              <option key={id} value={id}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="reservation-bar-divider" />
-
-        <div className="reservation-bar-field">
-          <select
-            value={guests}
-            onChange={e => setGuests(+e.target.value)}
-          >
-            {Array.from({ length: 5 }, (_, i) => i + 1).map(n => (
-              <option key={n} value={n}>
-                {n} Guest{n > 1 ? 's' : ''}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <button className="reservation-bar-book" onClick={handleBook}>
-          {inline ? 'FIND ROOM' : 'BOOK NOW'}
-        </button>
-      </div>
-
-      {/* Mobile: compact sticky button */}
-      {!inline && (
-        <button className="reservation-bar-mobile" onClick={handleBook}>
-          🏨 Book Your Stay
-        </button>
-      )}
+    <div ref={containerRef}>
+      <form id="widgetform">
+        <table cellPadding="0" cellSpacing="0">
+          <tbody>
+            <tr>
+              <td>
+                <input type="hidden" name="token" value="MTA4NTA=" />
+                <label>Check In</label>
+                <input type="text" name="datepick" id="datepick" placeholder="Check In" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label>Check Out</label>
+                <input type="text" name="datepick1" id="datepick1" placeholder="Check Out" />
+              </td>
+            </tr>
+            <tr>
+              <td id="searchbtn"></td>
+            </tr>
+          </tbody>
+        </table>
+        <img id="loadingimg" src="https://asiatech.in/booking_engine/admin/img/loader.gif" alt="Loading" />
+      </form>
     </div>
   );
 }
