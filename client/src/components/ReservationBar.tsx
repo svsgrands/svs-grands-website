@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-export default function ReservationBar({ inline }: { inline?: boolean }) {
+export default function ReservationBar({ inline: _inline }: { inline?: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
