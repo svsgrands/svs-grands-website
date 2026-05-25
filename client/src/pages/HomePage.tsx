@@ -56,7 +56,7 @@ const defaultSlides = [
     bgImage: '/assets/rooms/standard/2.png',
     fgImage: '/assets/rooms/superior/1.png',
     thumbs: [
-      '/assets/superior/2.png',
+      '/assets/rooms/superior/2.png',
       '/assets/rooms/deluxe/2.png',
     ],
   },
