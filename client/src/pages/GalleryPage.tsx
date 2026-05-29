@@ -27,42 +27,42 @@ interface SanityGalleryCategory {
 
 const defaultGalleryItems: GalleryItem[] = [
   // Classic Room
-  { src: '/assets/rooms/classic/1.png', alt: 'Classic Room — View 1', category: 'classic', type: 'image' },
-  { src: '/assets/rooms/classic/2.png', alt: 'Classic Room — Washroom', category: 'classic', type: 'image' },
-  { src: '/assets/rooms/classic/3.png', alt: 'Classic Room — View 3', category: 'classic', type: 'image' },
-  { src: '/assets/rooms/classic/4.png', alt: 'Classic Room — View 4', category: 'classic', type: 'image' },
-  { src: '/assets/rooms/classic/5.png', alt: 'Classic Room — View 5', category: 'classic', type: 'image' },
+  { src: '/assets/rooms/classic/1.webp', alt: 'Classic Room — View 1', category: 'classic', type: 'image' },
+  { src: '/assets/rooms/classic/2.webp', alt: 'Classic Room — Washroom', category: 'classic', type: 'image' },
+  { src: '/assets/rooms/classic/3.webp', alt: 'Classic Room — View 3', category: 'classic', type: 'image' },
+  { src: '/assets/rooms/classic/4.webp', alt: 'Classic Room — View 4', category: 'classic', type: 'image' },
+  { src: '/assets/rooms/classic/5.webp', alt: 'Classic Room — View 5', category: 'classic', type: 'image' },
   // Classic Rooms — Videos
-  { src: '/assets/gallery/classic/first-floor-ac.mp4', alt: 'Classic Room Tour', category: 'classic', type: 'video', poster: '/assets/rooms/classic/1.png' },
-  { src: '/assets/gallery/classic/ground-floor-ac-room.mp4', alt: 'Classic Room Tour 2', category: 'classic', type: 'video', poster: '/assets/rooms/classic/2.png' },
-  { src: '/assets/gallery/classic/ac-room-tour-1.mp4', alt: 'Classic Room Walkthrough 1', category: 'classic', type: 'video', poster: '/assets/rooms/classic/3.png' },
-  { src: '/assets/gallery/classic/ac-room-tour-2.mp4', alt: 'Classic Room Walkthrough 2', category: 'classic', type: 'video', poster: '/assets/rooms/classic/4.png' },
+  { src: '/assets/gallery/classic/first-floor-ac.mp4', alt: 'Classic Room Tour', category: 'classic', type: 'video', poster: '/assets/rooms/classic/1.webp' },
+  { src: '/assets/gallery/classic/ground-floor-ac-room.mp4', alt: 'Classic Room Tour 2', category: 'classic', type: 'video', poster: '/assets/rooms/classic/2.webp' },
+  { src: '/assets/gallery/classic/ac-room-tour-1.mp4', alt: 'Classic Room Walkthrough 1', category: 'classic', type: 'video', poster: '/assets/rooms/classic/3.webp' },
+  { src: '/assets/gallery/classic/ac-room-tour-2.mp4', alt: 'Classic Room Walkthrough 2', category: 'classic', type: 'video', poster: '/assets/rooms/classic/4.webp' },
   
   // Standard Room
-  { src: '/assets/rooms/standard/1.png', alt: 'Standard Room — Washroom', category: 'standard', type: 'image' },
-  { src: '/assets/rooms/standard/2.png', alt: 'Standard Room — View 2', category: 'standard', type: 'image' },
-  { src: '/assets/rooms/standard/3.png', alt: 'Standard Room — View 3', category: 'standard', type: 'image' },
+  { src: '/assets/rooms/standard/1.webp', alt: 'Standard Room — Washroom', category: 'standard', type: 'image' },
+  { src: '/assets/rooms/standard/2.webp', alt: 'Standard Room — View 2', category: 'standard', type: 'image' },
+  { src: '/assets/rooms/standard/3.webp', alt: 'Standard Room — View 3', category: 'standard', type: 'image' },
   // Standard Room — Video
-  { src: '/assets/gallery/standard/non-ac-room-tour.mp4', alt: 'Standard Room Tour', category: 'standard', type: 'video', poster: '/assets/rooms/standard/1.png' },
+  { src: '/assets/gallery/standard/non-ac-room-tour.mp4', alt: 'Standard Room Tour', category: 'standard', type: 'video', poster: '/assets/rooms/standard/1.webp' },
 
   // Deluxe Room
-  { src: '/assets/rooms/deluxe/1.png', alt: 'Deluxe Room — Washroom', category: 'deluxe', type: 'image' },
-  { src: '/assets/rooms/deluxe/2.png', alt: 'Deluxe Room — View 2', category: 'deluxe', type: 'image' },
-  { src: '/assets/rooms/deluxe/3.png', alt: 'Deluxe Room — View 3', category: 'deluxe', type: 'image' },
-  { src: '/assets/rooms/deluxe/4.png', alt: 'Deluxe Room — View 4', category: 'deluxe', type: 'image' },
+  { src: '/assets/rooms/deluxe/1.webp', alt: 'Deluxe Room — Washroom', category: 'deluxe', type: 'image' },
+  { src: '/assets/rooms/deluxe/2.webp', alt: 'Deluxe Room — View 2', category: 'deluxe', type: 'image' },
+  { src: '/assets/rooms/deluxe/3.webp', alt: 'Deluxe Room — View 3', category: 'deluxe', type: 'image' },
+  { src: '/assets/rooms/deluxe/4.webp', alt: 'Deluxe Room — View 4', category: 'deluxe', type: 'image' },
   
   // Superior Room
-  { src: '/assets/rooms/superior/1.png', alt: 'Superior Room — View 1', category: 'superior', type: 'image' },
-  { src: '/assets/rooms/superior/2.png', alt: 'Superior Room — View 2', category: 'superior', type: 'image' },
-  { src: '/assets/rooms/superior/3.png', alt: 'Superior Room — View 3', category: 'superior', type: 'image' },
-  { src: '/assets/rooms/superior/4.png', alt: 'Superior Room — View 4', category: 'superior', type: 'image' },
-  { src: '/assets/rooms/superior/5.png', alt: 'Superior Room — View 5', category: 'superior', type: 'image' },
-  { src: '/assets/rooms/superior/6.png', alt: 'Superior Room — Washroom', category: 'superior', type: 'image' },
+  { src: '/assets/rooms/superior/1.webp', alt: 'Superior Room — View 1', category: 'superior', type: 'image' },
+  { src: '/assets/rooms/superior/2.webp', alt: 'Superior Room — View 2', category: 'superior', type: 'image' },
+  { src: '/assets/rooms/superior/3.webp', alt: 'Superior Room — View 3', category: 'superior', type: 'image' },
+  { src: '/assets/rooms/superior/4.webp', alt: 'Superior Room — View 4', category: 'superior', type: 'image' },
+  { src: '/assets/rooms/superior/5.webp', alt: 'Superior Room — View 5', category: 'superior', type: 'image' },
+  { src: '/assets/rooms/superior/6.webp', alt: 'Superior Room — Washroom', category: 'superior', type: 'image' },
 
   // Family Comfort Room
-  { src: '/assets/rooms/family-comfort/1.png', alt: 'Family Comfort Room — Washroom', category: 'family-comfort', type: 'image' },
-  { src: '/assets/rooms/family-comfort/2.png', alt: 'Family Comfort Room — View 2', category: 'family-comfort', type: 'image' },
-  { src: '/assets/rooms/family-comfort/3.png', alt: 'Family Comfort Room — View 3', category: 'family-comfort', type: 'image' },
+  { src: '/assets/rooms/family-comfort/1.webp', alt: 'Family Comfort Room — Washroom', category: 'family-comfort', type: 'image' },
+  { src: '/assets/rooms/family-comfort/2.webp', alt: 'Family Comfort Room — View 2', category: 'family-comfort', type: 'image' },
+  { src: '/assets/rooms/family-comfort/3.webp', alt: 'Family Comfort Room — View 3', category: 'family-comfort', type: 'image' },
 
   // Exterior / Property
   { src: '/assets/gallery/exterior/ground-floor-corridor.jpeg', alt: 'Ground Floor Corridor', category: 'exterior', type: 'image' },

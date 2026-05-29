@@ -86,7 +86,7 @@ export default function Navbar({ settings }: { settings: any }) {
             <i className="fas fa-times"></i>
           </button>
           <div className="drawer-logo">
-            <img src={settings?.logo || "/assets/logo.png"} alt={settings?.hotelName || "SVS Grands"} />
+            <img src={settings?.logo || "/assets/logo.webp"} alt={settings?.hotelName || "SVS Grands"} />
             <span className="logo-text">SVS Grands</span>
           </div>
         </div>
@@ -128,7 +128,7 @@ export default function Navbar({ settings }: { settings: any }) {
       <nav className={`navbar ${scrolled ? 'scrolled' : ''} ${hidden ? 'hidden' : ''}`}>
         <div className="container">
           <Link to="/" className="navbar-logo">
-            <img src={settings?.logo || "/assets/logo.png"} alt={settings?.hotelName || "SVS Grands"} />
+            <img src={settings?.logo || "/assets/logo.webp"} alt={settings?.hotelName || "SVS Grands"} />
             <span className="navbar-logo-text">SVS Grands</span>
           </Link>
 

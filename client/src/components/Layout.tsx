@@ -44,7 +44,7 @@ export default function Layout() {
             {/* Branding & Description */}
             <div className="footer-brand">
               <Link to="/" className="footer-logo-wrap">
-                <img src={settings?.logo || "/assets/logo.png"} alt={settings?.hotelName || "SVS Grands"} className="footer-logo" />
+                <img src={settings?.logo || "/assets/logo.webp"} alt={settings?.hotelName || "SVS Grands"} className="footer-logo" />
                 <span className="footer-logo-text">SVS Grands</span>
               </Link>
               <p className="footer-desc">

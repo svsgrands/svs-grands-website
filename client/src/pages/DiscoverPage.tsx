@@ -52,7 +52,7 @@ const defaultDiscoverData = [
   {
     id: 'mandapalli',
     title: 'మందపల్లి — Sri Mandeswara Swamy Temple',
-    image: '/assets/discover/mandapalli.png',
+    image: '/assets/discover/mandapalli.webp',
     description: 'మందపల్లి is a highly visited pilgrimage destination known for the famous Sri Mandeswara Swamy Temple dedicated to Lord Shani.',
     distance: 'Approx. 20 km',
     timingLabel: 'Temple Timings',
@@ -70,7 +70,7 @@ const defaultDiscoverData = [
   {
     id: 'annavaram',
     title: 'అన్నవరం — Sri Satyanarayana Swamy Temple',
-    image: '/assets/discover/annavaram.png',
+    image: '/assets/discover/annavaram.webp',
     description: 'అన్నవరం is one of the most famous pilgrimage centers in Andhra Pradesh located on Ratnagiri Hill.',
     distance: 'Approx. 75 km',
     timingLabel: 'Temple Timings',
@@ -79,7 +79,7 @@ const defaultDiscoverData = [
   {
     id: 'draksharamam',
     title: 'ద్రాక్షారామం — Bhimeswara Swamy Temple',
-    image: '/assets/discover/draksharamam.png',
+    image: '/assets/discover/draksharamam.webp',
     description: 'ద్రాక్షారామం is one of the sacred Pancharama Kshetrams dedicated to Lord Shiva.',
     distance: 'Approx. 35 km',
     timingLabel: 'Temple Timings',
@@ -88,7 +88,7 @@ const defaultDiscoverData = [
   {
     id: 'kotipalli',
     title: 'కోటిపల్లి — Someswara Swamy Temple',
-    image: '/assets/discover/kotipalli.png',
+    image: '/assets/discover/kotipalli.webp',
     description: 'కోటిపల్లి is a calm riverside spiritual destination known for the Someswara Swamy Temple and scenic Godavari surroundings.',
     distance: 'Approx. 30 km',
     timingLabel: 'Temple Timings',
@@ -97,7 +97,7 @@ const defaultDiscoverData = [
   {
     id: 'appanapalli',
     title: 'అప్పనపల్లి — Bala Balaji Temple',
-    image: '/assets/discover/appanapalli.png',
+    image: '/assets/discover/appanapalli.webp',
     description: 'అప్పనపల్లి is a popular devotional destination known for the Sri Bala Balaji Temple located amidst Konaseema greenery.',
     distance: 'Approx. 45 km',
     timingLabel: 'Temple Timings',
@@ -106,7 +106,7 @@ const defaultDiscoverData = [
   {
     id: 'antarvedi',
     title: 'అంతర్వేది — Lakshmi Narasimha Swamy Temple',
-    image: '/assets/discover/antarvedi.png',
+    image: '/assets/discover/antarvedi.webp',
     description: 'అంతర్వేది is a beautiful spiritual and coastal destination where the Godavari river meets the Bay of Bengal.',
     distance: 'Approx. 70 km',
     timingLabel: 'Temple Timings',
@@ -115,7 +115,7 @@ const defaultDiscoverData = [
   {
     id: 'konaseema',
     title: 'కోనసీమ Coconut Roads & Backwaters',
-    image: '/assets/discover/konaseema.png',
+    image: '/assets/discover/konaseema.webp',
     description: 'Konaseema is famous for its scenic coconut tree roads, canals, lush greenery, and peaceful village landscapes.',
     distance: 'Accessible throughout surrounding region',
     timingLabel: 'Best Visiting Time',

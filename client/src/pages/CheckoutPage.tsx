@@ -63,12 +63,12 @@ export default function CheckoutPage() {
   };
 
   const getRoomImage = (id: string) => {
-    if (id === 'DELUXE') return '/assets/rooms/deluxe/1.png';
-    if (id === 'SUPERIOR') return '/assets/rooms/superior/1.png';
-    if (id === 'FAMILY_COMFORT') return '/assets/rooms/family-comfort/1.png';
-    if (id === 'CLASSIC') return '/assets/rooms/classic/1.png';
-    if (id === 'STANDARD') return '/assets/rooms/standard/1.png';
-    return '/assets/rooms/classic/1.png';
+    if (id === 'DELUXE') return '/assets/rooms/deluxe/1.webp';
+    if (id === 'SUPERIOR') return '/assets/rooms/superior/1.webp';
+    if (id === 'FAMILY_COMFORT') return '/assets/rooms/family-comfort/1.webp';
+    if (id === 'CLASSIC') return '/assets/rooms/classic/1.webp';
+    if (id === 'STANDARD') return '/assets/rooms/standard/1.webp';
+    return '/assets/rooms/classic/1.webp';
   };
 
   const generateWhatsAppUrl = (bookingId?: string) => {

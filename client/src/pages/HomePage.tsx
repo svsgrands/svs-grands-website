@@ -43,31 +43,31 @@ const defaultSlides = [
   {
     boldText: 'A COZY FAMILY STAY',
     normalText: 'NEAR KONASEEMA TIRUPATHI TEMPLE.',
-    bgImage: '/assets/rooms/classic/3.png',
-    fgImage: '/assets/rooms/classic/1.png',
+    bgImage: '/assets/rooms/classic/3.webp',
+    fgImage: '/assets/rooms/classic/1.webp',
     thumbs: [
-      '/assets/rooms/classic/1.png',
-      '/assets/rooms/standard/2.png',
+      '/assets/rooms/classic/1.webp',
+      '/assets/rooms/standard/2.webp',
     ],
   },
   {
     boldText: 'RELAX & RECHARGE',
     normalText: 'THE PERFECT STAY IN VADAPALLI.',
-    bgImage: '/assets/rooms/standard/2.png',
-    fgImage: '/assets/rooms/superior/1.png',
+    bgImage: '/assets/rooms/standard/2.webp',
+    fgImage: '/assets/rooms/superior/1.webp',
     thumbs: [
-      '/assets/rooms/superior/2.png',
-      '/assets/rooms/deluxe/2.png',
+      '/assets/rooms/superior/2.webp',
+      '/assets/rooms/deluxe/2.webp',
     ],
   },
   {
     boldText: 'COMFORTABLE ROOMS',
     normalText: 'AT COMFORTABLE PRICES.',
-    bgImage: '/assets/rooms/deluxe/2.png',
-    fgImage: '/assets/rooms/deluxe/3.png',
+    bgImage: '/assets/rooms/deluxe/2.webp',
+    fgImage: '/assets/rooms/deluxe/3.webp',
     thumbs: [
-      '/assets/rooms/standard/3.png',
-      '/assets/rooms/classic/1.png',
+      '/assets/rooms/standard/3.webp',
+      '/assets/rooms/classic/1.webp',
     ],
   },
 ];
@@ -76,7 +76,7 @@ const defaultRoomCategories = [
   {
     id: 'STANDARD',
     name: 'Standard Room',
-    image: '/assets/rooms/standard/2.png',
+    image: '/assets/rooms/standard/2.webp',
     price: '800',
     unit: '/12hrs',
     desc: 'Comfortable rooms with modern amenities — WiFi, TV (Optional), hot water and room service.'
@@ -84,7 +84,7 @@ const defaultRoomCategories = [
   {
     id: 'CLASSIC',
     name: 'Classic Room',
-    image: '/assets/rooms/classic/1.png',
+    image: '/assets/rooms/classic/1.webp',
     price: '1,000',
     unit: '/12hrs',
     desc: 'Climate-controlled rooms for a premium stay — all amenities plus air conditioning. TV (Optional).'
@@ -92,7 +92,7 @@ const defaultRoomCategories = [
   {
     id: 'DELUXE',
     name: 'Deluxe Room',
-    image: '/assets/rooms/deluxe/2.png',
+    image: '/assets/rooms/deluxe/2.webp',
     price: '1,500',
     unit: '/12hrs',
     desc: 'Spacious ground floor rooms with a double bed, TV, and premium furnishings for ultimate comfort.'
@@ -100,7 +100,7 @@ const defaultRoomCategories = [
   {
     id: 'SUPERIOR',
     name: 'Superior Room',
-    image: '/assets/rooms/superior/1.png',
+    image: '/assets/rooms/superior/1.webp',
     price: '1,500',
     unit: '/12hrs',
     desc: 'Elegant first-floor double bed rooms offering extra privacy, modern decor, and top-tier amenities.'
@@ -108,7 +108,7 @@ const defaultRoomCategories = [
   {
     id: 'FAMILY_COMFORT',
     name: 'Family Comfort Room',
-    image: '/assets/rooms/family-comfort/2.png',
+    image: '/assets/rooms/family-comfort/2.webp',
     price: '1,200',
     unit: '/12hrs',
     desc: 'Perfect for families, these spacious first-floor rooms offer great value without compromising on comfort.'
@@ -204,7 +204,7 @@ export default function HomePage() {
               normalText: data.heroSubheading || 'SVS GRANDS',
               bgImage: m.image || m.fallbackImage || '/assets/BackgroundPC.jpg',
               fgImage: m.image || m.fallbackImage || '/assets/BackgroundPC.jpg',
-              thumbs: [m.image || '/assets/rooms/classic/1.png', m.fallbackImage || '/assets/rooms/standard/2.png']
+              thumbs: [m.image || '/assets/rooms/classic/1.webp', m.fallbackImage || '/assets/rooms/standard/2.webp']
             }));
             setSlides(mappedSlides);
           }
@@ -239,7 +239,7 @@ export default function HomePage() {
                 return {
                   id: r.id || r._id,
                   name: r.name,
-                  image: r.coverImage || (original ? original.image : '/assets/rooms/classic/1.png'),
+                  image: r.coverImage || (original ? original.image : '/assets/rooms/classic/1.webp'),
                   desc: r.shortDescription || (original ? original.desc : 'Luxury stay experience.'),
                   price: original ? original.price : '800',
                   unit: original ? original.unit : '/12hrs'
@@ -328,7 +328,7 @@ export default function HomePage() {
               {/* Stats/Proof Block */}
               <div className="ar-proof-block">
                 <div className="ar-proof-image">
-                  <img src="/assets/rooms/classic/1.png" alt="SVS Grands Interior" />
+                  <img src="/assets/rooms/classic/1.webp" alt="SVS Grands Interior" />
                   <div className="ar-image-overlay"></div>
                 </div>
                 <div className="ar-proof-stats">
@@ -375,12 +375,12 @@ export default function HomePage() {
 
                 {/* Circle 3: Top Image (Medium) */}
                 <div className="ar-circle ar-circle-3 ar-circle-medium">
-                  <img src="/assets/rooms/superior/1.png" alt="Premium Room Stay" />
+                  <img src="/assets/rooms/superior/1.webp" alt="Premium Room Stay" />
                 </div>
 
                 {/* Circle 4: Bottom Image (Small) */}
                 <div className="ar-circle ar-circle-4 ar-circle-small">
-                  <img src="/assets/rooms/deluxe/3.png" alt="Luxury Amenities" />
+                  <img src="/assets/rooms/deluxe/3.webp" alt="Luxury Amenities" />
                 </div>
               </div>
             </div>
